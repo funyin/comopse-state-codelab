@@ -19,8 +19,14 @@ package com.codelab.layouts
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.codelab.layouts.ui.LayoutsCodelabTheme
 
@@ -36,14 +42,12 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    LayoutsCodelabTheme {
-        Greeting("Android")
+fun PhotographerCard() {
+    Column {
+        Text("Alfred Sisley", fontWeight = FontWeight.Bold)
+        // LocalContentAlpha is defining opacity level of its children
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Text("3 minutes ago", style = MaterialTheme.typography.body2)
+        }
     }
 }

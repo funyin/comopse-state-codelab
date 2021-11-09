@@ -20,7 +20,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -28,12 +30,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.codelabs.state.databinding.ActivityHelloCodelabBinding
+import com.codelabs.state.ui.StateCodelabTheme
+import org.intellij.lang.annotations.PrintFormat
 
 /**
  * An example showing unstructured state stored in an Activity.
@@ -124,10 +131,15 @@ private fun HelloScreen(helloViewModel: HelloViewModel = viewModel()) {
     HelloInput(name = name, onNameChange = { helloViewModel.onNameChanged(it) })
 }
 
+@Preview
 @Composable
 private fun HelloScreenWithInternalState() {
     val (name, setName) = remember { mutableStateOf("") }
-    HelloInput(name = name, onNameChange = setName)
+    StateCodelabTheme {
+        Column {
+            HelloInput(name = name, onNameChange = setName)
+        }
+    }
 }
 
 /**
@@ -139,7 +151,11 @@ private fun HelloInput(
     name: String,
     onNameChange: (String) -> Unit
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
         Text(name)
         TextField(
             value = name,

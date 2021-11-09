@@ -34,7 +34,6 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
 fun ConstraintLayoutContent() {
     ConstraintLayout {
         val (button, text) = createRefs()
-
         Button(
             onClick = { /* Do something */ },
             modifier = Modifier.constrainAs(button) {
@@ -45,7 +44,7 @@ fun ConstraintLayoutContent() {
         }
 
         Text("Text", Modifier.constrainAs(text) {
-            top.linkTo(button.bottom, margin = 16.dp)
+            top.linkTo(parent.top, margin = 16.dp)
         })
 
     }
@@ -103,7 +102,7 @@ fun ConstraintLayoutContentExample2() {
 
         Text("Text", Modifier.constrainAs(text) {
             top.linkTo(button1.bottom, margin = 16.dp)
-            centerAround(button1.end)
+            centerHorizontallyTo(button1)
         })
 
         val barrier = createEndBarrier(button1, text)

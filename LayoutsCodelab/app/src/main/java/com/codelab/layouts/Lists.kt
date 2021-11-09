@@ -17,11 +17,7 @@
 package com.codelab.layouts
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -48,20 +44,39 @@ fun SimpleColumn() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun SimpleColumnPreview() {
     SimpleColumn()
 }
 
 @Composable
-fun SimpleList() {
-    // We save the scrolling position with this state
+fun SimpleList(modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
-
-    Column(Modifier.verticalScroll(scrollState)) {
+    val coroutineScope = rememberCoroutineScope()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
+        Row {
+            Button(onClick = {
+                coroutineScope.launch {
+                    scrollState.animateScrollTo(0)
+                }
+            }) {
+                Text("Scroll To Top")
+            }
+            Button(onClick = {
+                coroutineScope.launch {
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
+            }) {
+                Text("Scroll To Bottom")
+            }
+        }
         repeat(100) {
-            Text("Item #$it", style = MaterialTheme.typography.subtitle1)
+            Text(text = "This is Item $it", modifier = Modifier.padding(vertical = 4.dp))
         }
     }
 }
@@ -113,11 +128,11 @@ fun ImageListItemPreview() {
 }
 
 @Composable
-fun ImageList() {
+fun ImageList(modifier: Modifier = Modifier) {
     // We save the scrolling position with this state
     val scrollState = rememberLazyListState()
 
-    LazyColumn(state = scrollState) {
+    LazyColumn(state = scrollState, modifier = modifier.fillMaxSize()) {
         items(100) {
             ImageListItem(it)
         }
@@ -127,7 +142,7 @@ fun ImageList() {
 @Preview
 @Composable
 fun ImageListPreview() {
-    ImageList()
+    ImageList(Modifier)
 }
 
 @Composable

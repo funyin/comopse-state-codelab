@@ -39,18 +39,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -193,6 +191,68 @@ fun TodoItemInputBackground(
     }
 }
 
+@Composable
+fun TodoItemEntryInput(onItemComplete: (TodoItem) -> Unit) {
+    val (text, setText) = remember { mutableStateOf("") }
+    val (icon, setIcon) = remember { mutableStateOf(TodoIcon.Default) }
+    val showIconsTray = text.isNotBlank()
+    val submit = {
+        onItemComplete.invoke(TodoItem(text, icon))
+        setText("")
+        setIcon(TodoIcon.Default)
+    }
+    TodoItemInput(text, setText, icon, setIcon, showIconsTray, submit = submit) {
+        TodoEditButton(
+            onClick = submit, text = "Add",
+            enabled = text.isNotBlank()
+        )
+    }
+}
+
+@Composable
+fun TodoItemInput(
+    text: String,
+    setText: (String) -> Unit,
+    icon: TodoIcon,
+    setIcon: (TodoIcon) -> Unit,
+    showIconsTray: Boolean,
+    submit: () -> Unit,
+    buttonSlot: @Composable () -> Unit
+) {
+    Column {
+        Row(modifier = Modifier
+            .padding(top=16.dp)
+            .padding(horizontal = 16.dp)) {
+            TodoInputTextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
+                text = text,
+                onTextChange = setText,
+                onImeiActions = submit
+            )
+            Box(modifier = Modifier.align(Alignment.CenterVertically)) { buttonSlot() }
+        }
+        if (showIconsTray)
+            AnimatedIconRow(icon = icon, onIconChange = setIcon)
+        else
+            Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+fun TodoInputTextField(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onImeiActions: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TodoInputText(
+        modifier = modifier,
+        text = text, onTextChange = onTextChange, onImeAction = onImeiActions
+    )
+}
+
 /**
  * Styled [TextField] for inputting a [TodoItem].
  *
@@ -239,7 +299,7 @@ fun TodoEditButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
-    TextButton(
+    Button(
         onClick = onClick,
         shape = CircleShape,
         enabled = enabled,
